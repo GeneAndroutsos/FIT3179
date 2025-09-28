@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@6.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@6.1.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@7.0.2"></script>
+</head>
+<body>
+  <div id="vis"/>
+  <script>
+    const spec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Average property price by suburb (Melbourne)",
+  "title": "Average Property Price by Suburb — Melbourne (2016–17)",
+  "width": 800,
+  "height": 600,
+  "projection": {"type": "mercator", "center": [145, -37.8], "scale": 30000},
+  "layer": [
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/rowanhogan/australian-states/master/states.geojson"
+      },
+      "mark": {"type": "geoshape", "fill": "#eef6fb", "stroke": "#aaa"}
+    },
+    {
+      "data": {"graticule": {"step": [0.25, 0.25]}},
+      "mark": {"type": "geoshape", "stroke": "#999", "strokeWidth": 0.5}
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/GeneAndroutsos/FIT3179/main/avg_price_by_suburb.csv"
+      },
+      "mark": {"type": "circle", "opacity": 0.7, "stroke": "#333"},
+      "encoding": {
+        "longitude": {"field": "lon", "type": "quantitative"},
+        "latitude": {"field": "lat", "type": "quantitative"},
+        "size": {
+          "field": "avg_price",
+          "type": "quantitative",
+          "scale": {"range": [10, 2000]},
+          "title": "Average Price (AUD)"
+        },
+        "color": {
+          "field": "avg_price",
+          "type": "quantitative",
+          "scale": {"scheme": "goldred"},
+          "title": "Average Price (AUD)"
+        },
+        "tooltip": [
+          {"field": "Suburb", "type": "nominal"},
+          {"field": "avg_price", "type": "quantitative", "format": ".0f"},
+          {"field": "count", "type": "quantitative"}
+        ]
+      }
+    }
+  ],
+  "config": {}
+};
+    vegaEmbed("#vis", spec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>
