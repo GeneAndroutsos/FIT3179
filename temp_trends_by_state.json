@@ -1,0 +1,129 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 850,
+    "height": 420,
+    "data": {
+        "url": "https://raw.githubusercontent.com/GeneAndroutsos/FIT3179/main/AustralianAverageMaxTemp.csv"
+    },
+    "transform": [
+        {
+            "aggregate": [
+                {
+                    "op": "mean",
+                    "field": "Temp",
+                    "as": "AvgTemp"
+                }
+            ],
+            "groupby": [
+                "Year",
+                "state"
+            ]
+        }
+    ],
+    "params": [
+        {
+            "name": "highlightState",
+            "bind": {
+                "input": "select",
+                "options": [
+                    "New South Wales",
+                    "Victoria",
+                    "Queensland",
+                    "South Australia",
+                    "Western Australia",
+                    "Tasmania",
+                    "Northern Territory",
+                    "Australian Capital Territory"
+                ],
+                "name": "Highlight State: "
+            },
+            "value": "Queensland"
+        }
+    ],
+    "layer": [
+        {
+            "mark": {
+                "type": "line",
+                "strokeWidth": 2,
+                "opacity": 0.5
+            },
+            "encoding": {
+                "x": {
+                    "field": "Year",
+                    "type": "temporal",
+                    "timeUnit": "year"
+                },
+                "y": {
+                    "field": "AvgTemp",
+                    "type": "quantitative",
+                    "title": "Average Max Temperature (°C)"
+                },
+                "color": {
+                    "field": "state",
+                    "type": "nominal",
+                    "title": "State/Territory",
+                    "scale": {
+                        "scheme": "tableau10"
+                    }
+                }
+            }
+        },
+        {
+            "transform": [
+                {
+                    "filter": "datum.state == highlightState"
+                }
+            ],
+            "mark": {
+                "type": "line",
+                "strokeWidth": 3,
+                "color": "#1e40af"
+            },
+            "encoding": {
+                "x": {
+                    "field": "Year",
+                    "type": "temporal",
+                    "timeUnit": "year",
+                    "title": "Year",
+                    "axis": {
+                        "format": "%Y",
+                        "labelAngle": -45,
+                        "orient": "bottom"
+                    }
+                },
+                "y": {
+                    "field": "AvgTemp",
+                    "type": "quantitative",
+                    "title": "Average Max Temperature (°C)"
+                },
+                "tooltip": [
+                    {
+                        "field": "state",
+                        "title": "State"
+                    },
+                    {
+                        "field": "Year",
+                        "title": "Year"
+                    },
+                    {
+                        "field": "AvgTemp",
+                        "title": "Average Max Temp (°C)",
+                        "format": ".2f"
+                    }
+                ]
+            }
+        }
+    ],
+    "config": {
+        "background": "#f8fafc",
+        "axis": {
+            "labelColor": "#1e293b",
+            "titleColor": "#1e293b",
+            "titleFontWeight": "bold"
+        },
+        "legend": {
+            "labelColor": "#1e293b",
+            "titleColor": "#1e293b"
+        }
+    }
+}

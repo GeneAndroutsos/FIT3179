@@ -1,0 +1,107 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+      "url": "https://raw.githubusercontent.com/GeneAndroutsos/FIT3179/main/AustralianAverageMaxTemp.csv"
+    },
+    "params": [
+      {
+        "name": "selectedStation",
+        "bind": {
+          "input": "select",
+          "options": [
+            "KALUMBURU", "HALLS CREEK", "BROOME AIRPORT", "PORT HEDLAND AIRPORT", "MARBLE BAR",
+            "LEARMONTH AIRPORT", "WITTENOOM", "CARNARVON AIRPORT", "MEEKATHARRA AIRPORT",
+            "MORAWA AIRPORT", "DALWALLINU", "GERALDTON AIRPORT", "PERTH AIRPORT", "CAPE LEEUWIN",
+            "BRIDGETOWN", "ESPERANCE", "ALBANY", "MERREDIN", "CUNDERDIN", "KATANNING", "WANDERING",
+            "EUCLA", "FORREST", "KALGOORLIE-BOULDER", "GILES", "DARWIN", "VICTORIA RIVER DOWNS",
+            "TENNANTCREEKAIRPORT", "ALICE SPRINGS", "RABBIT FLAT", "WOOMERA", "TARCOOLA", "OODNADATTA",
+            "MARREE", "CEDUNAAMO", "KYANCUTTA", "PORT LINCOLN", "RAYVILLEPARK", "CAPEBORDA",
+            "KENTTOWN", "NURIOOTPAPIRSA", "MOUNT GAMBIER", "ROBE", "WEIPAAERO", "HORNISLAND",
+            "PALMERVILLE", "NORMANTON", "BURKETOWN", "RICHMOND POST OFFICE", "GEORGETOWN", "CAIRNSAERO",
+            "TOWNSVILLE", "MACKAY", "CHARTERS TOWERS", "BARCALDINE", "LONGREACH", "CAMOOWEAL", "BOULIA",
+            "BIRDSVILLE", "GAYNDAH", "ROCKHAMPTON", "BUNDABERGAERO", "AMBERLEYAMO",
+            "CAPE MORETON LIGHTHOUSE", "BRISBANEAERO", "MILES CONSTANCE STREET", "ST GEORGE AIRPORT",
+            "CHARLEVILLE", "THARGOMINDAH", "WILCANNIA", "TIBOOBURRA", "COBARMO", "BOURKE", "WESTWYALONG",
+            "WALGETT", "MOREEAERO", "GUNNEDAH", "INVERELL", "YAMBA PILOT STATION", "COFFS HARBOUR",
+            "PORT MACQUARIE", "WILLIAMTOWN", "SCONE", "BATHURS TAGRICULTURAL STATION", "DUBBO",
+            "SYDNEY (OBSERVATORYHILL)", "RICHMOND", "NOWRARAN", "POINT PERPENDICULAR", "MORUYAHEADS",
+            "CANBERRA AIRPORT", "WAGGA WAGGA", "CABRAMURRA", "DENILIQUIN", "MILDURA", "NHILL", "KERANG",
+            "RUTHERGLEN", "GABOISLAND LIGHTHOUSE", "ORBOST", "EASTSALE", "WILSONS PROMONTORY LIGHTHOUSE",
+            "MELBOURNE(OLYMPICPARK)", "LAVERTON", "CAPE OTWAY LIGHTHOUSE", "LOWHEAD",
+            "LAUNCESTONAIRPORT", "LARAPUNA(EDDYSTONEPOINT)", "CAPEBRUNY LIGHTHOUSE",
+            "HOBART(ELLERSLIEROAD)", "GROVE(RESEARCHSTATION)", "BUTLERS GORGE"
+          ],
+          "name": "Select Station: "
+        },
+        "value": "CABRAMURRA"
+      }
+    ],
+    "vconcat": [
+      {
+        "width": 850,
+        "height": 350,
+        "transform": [
+          {"filter": "datum.name == selectedStation"}
+        ],
+        "mark": {
+          "type": "bar",
+          "color": "#60a5fa",
+          "opacity": 0.8
+        },
+        "encoding": {
+          "x": {
+            "field": "Year",
+            "type": "ordinal",
+            "title": "Year",
+            "scale": {"domain": {"selection": "brush"}},
+            "axis": {"labelAngle": -45}
+          },
+          "y": {
+            "aggregate": "mean",
+            "field": "Temp",
+            "type": "quantitative",
+            "title": "Average Max Temperature (°C)"
+          },
+          "tooltip": [
+            {"field": "name", "title": "Station"},
+            {"field": "Year", "title": "Year"},
+            {"aggregate": "mean", "field": "Temp", "title": "Avg Max Temp (°C)"}
+          ]
+        }
+      },
+      {
+        "width": 850,
+        "height": 80,
+        "transform": [
+          {"filter": "datum.name == selectedStation"}
+        ],
+        "mark": {"type": "bar", "color": "#3b82f6", "opacity": 0.6},
+        "selection": {
+          "brush": {"type": "interval", "encodings": ["x"]}
+        },
+        "encoding": {
+          "x": {
+            "field": "Year",
+            "type": "ordinal",
+            "title": "Select Year Range"
+          },
+          "y": {
+            "aggregate": "mean",
+            "field": "Temp",
+            "type": "quantitative",
+            "axis": {"title": ""}
+          }
+        }
+      }
+    ],
+    "config": {
+      "background": "#f8fafc",
+      "view": {"stroke": null},
+      "axis": {
+        "labelColor": "#1e293b",
+        "titleColor": "#1e293b",
+        "titleFontWeight": "bold"
+      }
+    }
+  }
+  

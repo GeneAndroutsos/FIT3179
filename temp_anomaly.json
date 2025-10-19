@@ -1,0 +1,139 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 850,
+    "height": 420,
+    "data": {
+        "url": "https://raw.githubusercontent.com/GeneAndroutsos/FIT3179/main/AustralianAverageMaxTemp.csv"
+    },
+    "transform": [
+        {
+            "aggregate": [
+                {
+                    "op": "mean",
+                    "field": "Temp",
+                    "as": "YearlyAvgTemp"
+                }
+            ],
+            "groupby": [
+                "Year"
+            ]
+        },
+        {
+            "joinaggregate": [
+                {
+                    "op": "mean",
+                    "field": "YearlyAvgTemp",
+                    "as": "LongTermMean"
+                }
+            ]
+        },
+        {
+            "calculate": "datum.YearlyAvgTemp - datum.LongTermMean",
+            "as": "Anomaly"
+        }
+    ],
+    "layer": [
+        {
+            "mark": {
+                "type": "area",
+                "interpolate": "monotone",
+                "line": {
+                    "color": "#1e293b",
+                    "strokeWidth": 1.5
+                },
+                "opacity": 0.85
+            },
+            "encoding": {
+                "x": {
+                    "field": "Year",
+                    "type": "temporal",
+                    "timeUnit": "year",
+                    "title": "Year",
+                    "axis": {
+                        "format": "%Y",
+                        "labelAngle": -45
+                    }
+                },
+                "y": {
+                    "field": "Anomaly",
+                    "type": "quantitative",
+                    "title": "Temperature Anomaly (°C)",
+                    "scale": {
+                        "zero": true
+                    }
+                },
+                "color": {
+                    "condition": {
+                        "test": "datum.Anomaly > 0",
+                        "value": "#ef4444"
+                    },
+                    "value": "#3b82f6"
+                },
+                "tooltip": [
+                    {
+                        "field": "Year",
+                        "title": "Year",
+                        "timeUnit": "year",
+                        "format": "%Y"
+                    },
+                    {
+                        "field": "YearlyAvgTemp",
+                        "title": "Avg Temp (°C)",
+                        "format": ".2f"
+                    },
+                    {
+                        "field": "Anomaly",
+                        "title": "Anomaly (°C)",
+                        "format": "+.2f"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "text",
+                "align": "left",
+                "baseline": "bottom",
+                "dx": 130,
+                "dy": -35,
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "color": "#1e3a8a"
+            },
+            "transform": [
+                {
+                    "aggregate": [
+                        {
+                            "op": "mean",
+                            "field": "YearlyAvgTemp",
+                            "as": "MeanTemp"
+                        }
+                    ]
+                },
+                {
+                    "calculate": "'Avg Temp: ' + format(datum.MeanTemp, '.2f') + '°C'",
+                    "as": "label"
+                }
+            ],
+            "encoding": {
+                "x": {
+                    "datum": 2018
+                },
+                "y": {
+                    "datum": 0
+                },
+                "text": {
+                    "field": "label"
+                }
+            }
+        }
+    ],
+    "config": {
+        "background": "#f8fafc",
+        "axis": {
+            "labelColor": "#1e293b",
+            "titleColor": "#1e293b",
+            "titleFontWeight": "bold"
+        }
+    }
+}

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Australian Climate Visualisations (1975–2019)</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vega Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+  <style>
+    body {
+      font-family: "Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background-color: #eff4f9;
+      margin: 40px;
+      text-align: center;
+      color: #1e293b;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 30px;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 1.5;
+      color: #475569;
+      margin-bottom: 25px;
+    }
+
+    h3 {
+      font-weight: 700;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    p,
+    footer {
+      font-weight: 400;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    /* General chart box styling */
+    .chart {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      padding: 40px;
+      margin: 50px auto;
+      width: 95%;
+      max-width: 1400px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .chart-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .chart-text {
+      flex: 1;
+      max-width: 220px;
+      padding: 1px;
+      text-align: center;
+    }
+
+    .chart-text h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 12px;
+    }
+
+    .chart-text p {
+      font-size: 15px;
+      color: #475569;
+      line-height: 1.7;
+    }
+
+    .chart-vis {
+      flex: 2;
+      min-width: 600px;
+      max-width: 100%;
+      overflow: visible;
+    }
+
+    .chart-row.reverse {
+      flex-direction: row-reverse;
+    }
+
+    /* SIMPLE SECTION DIVIDER WITH LINE */
+    .section-divider {
+      margin: 80px auto 50px;
+      text-align: center;
+      position: relative;
+      width: 90%;
+      max-width: 1200px;
+    }
+
+    .section-divider::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: rgba(30, 41, 59, 0.2);
+      z-index: 0;
+    }
+
+    .section-divider h2 {
+      position: relative;
+      display: inline-block;
+      background: #eff4f9;
+      padding: 0 20px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e293b;
+      z-index: 1;
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 0.9em;
+      color: #64748b;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Australian Climate Visualisations (1975 – 2019)</h1>
+
+  <div class="chart intro">
+    <p>
+      This dashboard explores how <strong>Australia’s climate has changed over the past four decades</strong>,
+      drawing on temperature data from 112 official ACORN-SAT weather stations nationwide.
+    </p>
+    <p>
+      Through interactive visualisations, we uncover long-term <strong>trends in maximum temperatures</strong>,
+      the effects of <strong>elevation and geography</strong>, and the growing signs of a <strong>warming
+        continent</strong>.
+    </p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section-divider">
+    <h2>A National View of the Australian Climate</h2>
+  </div>
+
+  <!-- MAP -->
+  <div class="chart chart-row">
+    <div class="chart-text">
+      <h3>Average Maximum Yearly Temperature Across Australia</h3>
+      <p>
+        This interactive map displays the average maximum yearly temperatures across all ACORN-SAT stations.
+        Generally, weather stations in northern Australian experience hotter conditions, with colder conditions further south of the country.
+        <br /><br />
+        Use the slider to explore how temperature distribution has changed from 1975 to 2019 across different
+        regions of Australia. 
+      </p>
+    </div>
+    <div id="map" class="chart-vis"></div>
+  </div>
+
+  <!-- TEMP ANOMALY -->
+  <div class="chart chart-row reverse">
+    <div class="chart-text">
+      <h3>How the Yearly National Average Temperature Compares to the Long-Term Mean</h3>
+      <p>
+        This anomaly chart visualises deviations from Australia’s long-term average temperature.
+        While the average maximum temperature in Australia from 1975 to 2019 has been 25 degrees celsius, the country has experienced gradually increasing maximum temperatures.
+        <br /><br />
+        Most recently, we experienced a nationwide high in 2019 at 29 degrees celsius, 3.5 degrees above the nation average.
+      </p>
+    </div>
+    <div id="tempAnomaly" class="chart-vis"></div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section-divider">
+    <h2>Drilling Down on States and Territories</h2>
+  </div>
+
+  <!-- HEATMAP -->
+  <div class="chart chart-row">
+    <div class="chart-text">
+      <h3>Average Maximum Temperature Heatmap by State and Year</h3>
+      <p>
+        This heatmap shows how each state’s average maximum temperature has evolved over time.
+        The colour gradient highlights warming trends and regional differences across Australia.
+        The Northern Territory and Queensland experience the highest average maximum temperatures, while Tasmania and the ACT experience the lowest.
+      </p>
+    </div>
+    <div id="heatmap" class="chart-vis"></div>
+  </div>
+
+  <!-- STATE TRENDS -->
+  <div class="chart chart-row reverse">
+    <div class="chart-text">
+      <h3>Average Maximum Temperature Trends by State and Territory</h3>
+      <p>
+        This line chart compares temperature trends across states and territories. It demonstrates that the Northern Territory exhibits the highest temperatures over the past few decades, while Tasmania shows the lowest.
+        <br /><br />
+        Select a specific state to highlight it and observe its trend relative to others across
+        Australia’s diverse climates.
+      </p>
+    </div>
+    <div id="stateTrends" class="chart-vis"></div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section-divider">
+    <h2>Observing Temperatures by Stations</h2>
+  </div>
+
+  <!-- CORRELATION -->
+  <div class="chart chart-row">
+    <div class="chart-text">
+      <h3>Relationship Between Elevation and Average Maximum Temperature</h3>
+      <p>
+        This scatterplot shows how elevation influences temperature.
+        Higher-altitude weather stations generally record lower average maximum temperatures, illustrating
+        an inverse relationship between the two variables.
+        <br /><br />
+        "Butlers Gorge" highlights an example of a station with a high elevation (667m) and relatively low average max temperature (14 degrees celsius).
+      </p>
+    </div>
+    <div id="correlation" class="chart-vis"></div>
+  </div>
+
+  <!-- HISTOGRAM -->
+  <div class="chart chart-row reverse">
+    <div class="chart-text">
+      <h3>Yearly Temperature Trends by Weather Station</h3>
+      <p>
+        The histogram allows us to determine any trends between average max temperature and weather stations, highlighting yearly variations in average maximum temperature.
+        <br /><br />
+        Most weather stations have experienced an increasing maximum temperature over the past 4 decades.
+      </p>
+    </div>
+    <div id="histogram" class="chart-vis"></div>
+  </div>
+
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+      vegaEmbed("#map", "map_spec.json", { actions: false }).catch(console.error);
+      vegaEmbed("#tempAnomaly", "temp_anomaly.json", { actions: false }).catch(console.error);
+      vegaEmbed("#heatmap", "temp_heatmap.json", { actions: false }).catch(console.error);
+      vegaEmbed("#stateTrends", "temp_trends_by_state.json", { actions: false }).catch(console.error);
+      vegaEmbed("#correlation", "temp_elevation.json", { actions: false }).catch(console.error);
+      vegaEmbed("#histogram", "temp_year_histogram.json", { actions: false }).catch(console.error);
+    });
+  </script>
+
+  <footer>
+    Data Source: Bureau of Meteorology (BOM), Kaggle |
+    Created for <strong>FIT3179 Data Visualisation 2</strong> |
+    Author: <strong>Gene Androutsos</strong>, 2025
+  </footer>
+</body>
+
+</html>

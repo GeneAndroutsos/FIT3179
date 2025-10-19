@@ -1,0 +1,110 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 780,
+    "height": 420,
+    
+    "data": {
+      "url": "https://raw.githubusercontent.com/GeneAndroutsos/FIT3179/main/AustralianAverageMaxTemp.csv"
+    },
+  
+    "transform": [
+      {
+        "aggregate": [
+          { "op": "mean", "field": "Temp", "as": "AvgTemp" }
+        ],
+        "groupby": ["Year", "state"]
+      },
+      {
+        "calculate": "toNumber(datum.Year)",
+        "as": "YearNum"
+      },
+      {
+        "calculate": "datum.YearNum == highlightYear",
+        "as": "isHighlighted"
+      }
+    ],
+  
+    "params": [
+      {
+        "name": "highlightYear",
+        "value": 2000,
+        "bind": {
+          "input": "range",
+          "min": 1975,
+          "max": 2019,
+          "step": 1,
+          "name": "Highlight Year: "
+        }
+      }
+    ],
+  
+    "mark": {
+      "type": "rect",
+      "stroke": "#ffffff",
+      "strokeWidth": 0.5
+    },
+  
+    "encoding": {
+      "x": {
+        "field": "Year",
+        "type": "ordinal",
+        "title": "Year",
+        "axis": {
+          "labelAngle": -45,
+          "labelFontSize": 10,
+          "labelColor": "#1e293b",
+          "titleColor": "#1e293b"
+        }
+      },
+      "y": {
+        "field": "state",
+        "type": "nominal",
+        "title": "State/Territory",
+        "sort": {
+          "op": "mean",
+          "field": "AvgTemp",
+          "order": "descending"
+        },
+        "axis": {
+          "labelColor": "#1e293b",
+          "titleColor": "#1e293b"
+        }
+      },
+      "color": {
+        "field": "AvgTemp",
+        "type": "quantitative",
+        "title": "Avg Max Temp (°C)",
+        "scale": {
+          "scheme": "redyellowblue",
+          "reverse": true,
+          "domain": [10, 45]
+        }
+      },
+      "opacity": {
+        "condition": [
+          { "test": "datum.isHighlighted", "value": 1 }
+        ],
+        "value": 0.8
+      },
+      "tooltip": [
+        { "field": "state", "title": "State" },
+        { "field": "Year", "title": "Year" },
+        { "field": "AvgTemp", "title": "Average Temp (°C)", "format": ".2f" }
+      ]
+    },
+  
+    "config": {
+      "background": "#f8fafc",
+      "axis": {
+        "labelColor": "#1e293b",
+        "titleColor": "#1e293b",
+        "titleFontWeight": "bold"
+      },
+      "legend": {
+        "labelColor": "#1e293b",
+        "titleColor": "#1e293b",
+        "orient": "right"
+      }
+    }
+  }
+  
